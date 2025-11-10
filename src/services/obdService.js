@@ -1,39 +1,64 @@
-// src/services/obdService.js
-class OBDService {
-  constructor() {
-    this.isConnected = false;
-    this.bluetoothService = null;
-  }
+import BluetoothService from './bluetoothService';
 
-  setBluetoothService(bluetoothService) {
-    this.bluetoothService = bluetoothService;
-  }
+const OBDService = {
+  initialize: async () => {
+    return await BluetoothService.initializeOBD();
+  },
 
-  async connect() {
-    // OBD connection logic will go here
-    this.isConnected = true;
-    return true;
-  }
+  readAllData: async () => {
+    try {
+      // For now, use mock data until real Bluetooth is fully implemented
+      return {
+        speed: Math.floor(Math.random() * 120),
+        rpm: Math.floor(Math.random() * 3000) + 1000,
+        coolantTemp: Math.floor(Math.random() * 40) + 70,
+        engineLoad: Math.floor(Math.random() * 100),
+        throttle: Math.floor(Math.random() * 100),
+        intakeTemp: Math.floor(Math.random() * 30) + 20,
+        timestamp: new Date().toISOString(),
+        isConnected: true,
+      };
+    } catch (error) {
+      console.error('Error reading OBD data:', error);
+      // Fallback to mock data
+      return OBDService.getMockData();
+    }
+  },
 
-  async disconnect() {
-    this.isConnected = false;
-    return true;
-  }
-
-  async readDTCs() {
-    // DTC reading logic will go here
-    return ['P0100', 'P0200', 'P0300']; // Mock DTCs for now
-  }
-
-  async readLiveData() {
-    // Live data reading logic will go here
+  getMockData: () => {
     return {
-      rpm: 2500,
-      speed: 65,
-      engineTemp: 85,
-      fuelLevel: 75,
+      speed: Math.floor(Math.random() * 120),
+      rpm: Math.floor(Math.random() * 3000) + 1000,
+      coolantTemp: Math.floor(Math.random() * 40) + 70,
+      engineLoad: Math.floor(Math.random() * 100),
+      throttle: Math.floor(Math.random() * 100),
+      intakeTemp: Math.floor(Math.random() * 30) + 20,
+      timestamp: new Date().toISOString(),
+      isConnected: true,
     };
-  }
-}
+  },
 
-export default new OBDService();
+  readTroubleCodes: async () => {
+    try {
+      // Mock DTC codes for now
+      const codes = ['P0300', 'P0420', 'P0500'];
+      return Math.random() > 0.7 ? codes : [];
+    } catch (error) {
+      console.error('Error reading trouble codes:', error);
+      return [];
+    }
+  },
+
+  clearTroubleCodes: async () => {
+    try {
+      console.log('Clearing trouble codes...');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return true;
+    } catch (error) {
+      console.error('Error clearing trouble codes:', error);
+      return false;
+    }
+  }
+};
+
+export default OBDService;

@@ -3,13 +3,23 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   ActivityIndicator,
   Modal,
 } from 'react-native';
 import { Card, Button } from 'react-native-paper';
-import BluetoothService from '../services/bluetoothService';
+
+// TEMPORARY MOCK
+const BluetoothService = {
+  scanForDevices: async () => {
+    console.log('Scanning for OBD2 devices...');
+    return [
+      { name: 'OBD2 Simulator 1', id: 'sim-001', device: { id: 'sim-001', name: 'OBD2 Simulator 1' } },
+      { name: 'ELM327 Bluetooth 2', id: 'sim-002', device: { id: 'sim-002', name: 'ELM327 Bluetooth 2' } },
+      { name: 'Veepeak OBDCheck 3', id: 'sim-003', device: { id: 'sim-003', name: 'Veepeak OBDCheck 3' } }
+    ];
+  }
+};
 
 const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
   const [devices, setDevices] = useState([]);
@@ -49,9 +59,9 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
       <View style={styles.container}>
         <Card style={styles.headerCard}>
           <Card.Content>
-            <Text style={styles.title}>🔗 Conectare OBD2</Text>
+            <Text style={styles.title}>🔗 CONECTARE OBD2</Text>
             <Text style={styles.subtitle}>
-              Selectează dispozitivul OBD2 din listă
+              SELECTEAZĂ DISPOZITIVUL OBD2 DIN LISTĂ
             </Text>
           </Card.Content>
         </Card>
@@ -63,16 +73,17 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
             disabled={isScanning}
             icon="refresh"
             style={styles.scanButton}
+            labelStyle={styles.scanButtonText}
           >
-            {isScanning ? 'Scanare...' : 'Rescanează'}
+            {isScanning ? 'SCANARE...' : 'RESCANEAZĂ'}
           </Button>
         </View>
 
         <ScrollView style={styles.devicesList}>
           {isScanning && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#2196F3" />
-              <Text style={styles.loadingText}>Caută dispozitive OBD2...</Text>
+              <ActivityIndicator size="large" color="#FFC107" />
+              <Text style={styles.loadingText}>CAUTĂ DISPOZITIVE OBD2...</Text>
             </View>
           )}
 
@@ -80,11 +91,11 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
             <Card style={styles.emptyCard}>
               <Card.Content>
                 <Text style={styles.emptyText}>
-                  Nu s-au găsit dispozitive OBD2.{'\n'}
-                  Asigură-te că:{'\n'}
-                  • Adaptorul OBD2 este pornit{'\n'}
-                  • Bluetooth este activat{'\n'}
-                  • Dispozitivul este în modul de pairing
+                  NU S-AU GĂSIT DISPOZITIVE OBD2.{'\n'}
+                  ASIGURĂ-TE CĂ:{'\n'}
+                  • ADAPTORUL OBD2 ESTE PORNIT{'\n'}
+                  • BLUETOOTH ESTE ACTIVAT{'\n'}
+                  • DISPOZITIVUL ESTE ÎN MODUL DE PAIRING
                 </Text>
               </Card.Content>
             </Card>
@@ -96,7 +107,7 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
                 <View style={styles.deviceInfo}>
                   <View>
                     <Text style={styles.deviceName}>
-                      {device.name || 'Dispozitiv OBD2'}
+                      {device.name || 'DISPOZITIV OBD2'}
                     </Text>
                     <Text style={styles.deviceId}>{device.id}</Text>
                   </View>
@@ -105,8 +116,10 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
                     onPress={() => handleDeviceSelect(device)}
                     disabled={isLoading}
                     compact
+                    style={styles.connectButton}
+                    labelStyle={styles.connectButtonText}
                   >
-                    Conectare
+                    CONECTARE
                   </Button>
                 </View>
               </Card.Content>
@@ -115,8 +128,13 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button mode="text" onPress={onClose}>
-            Închide
+          <Button 
+            mode="text" 
+            onPress={onClose}
+            style={styles.closeButton}
+            labelStyle={styles.closeButtonText}
+          >
+            ÎNCHIDE
           </Button>
         </View>
       </View>
@@ -127,29 +145,35 @@ const OBDConnector = ({ visible, onClose, onConnect, isLoading }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#1a1a1a', // Dark background for better contrast
     padding: 16,
   },
   headerCard: {
     marginBottom: 16,
+    backgroundColor: '#2d2d2d',
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#333',
+    color: '#FFC107', // Yellow
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     textAlign: 'center',
-    color: '#666',
+    color: '#FFC107', // Yellow
     marginTop: 4,
+    fontWeight: '500',
   },
   actions: {
     marginBottom: 16,
   },
   scanButton: {
-    borderColor: '#2196F3',
+    borderColor: '#FFC107', // Yellow border
+  },
+  scanButtonText: {
+    color: '#FFC107', // Yellow text
+    fontWeight: 'bold',
   },
   devicesList: {
     flex: 1,
@@ -160,18 +184,22 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 8,
-    color: '#666',
+    color: '#FFC107', // Yellow
+    fontWeight: 'bold',
   },
   emptyCard: {
     marginBottom: 8,
+    backgroundColor: '#2d2d2d',
   },
   emptyText: {
     textAlign: 'center',
-    color: '#666',
+    color: '#FFC107', // Yellow
     lineHeight: 20,
+    fontWeight: '500',
   },
   deviceCard: {
     marginBottom: 8,
+    backgroundColor: '#2d2d2d',
   },
   deviceInfo: {
     flexDirection: 'row',
@@ -180,13 +208,30 @@ const styles = StyleSheet.create({
   },
   deviceName: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#FFC107', // Yellow
   },
   deviceId: {
     fontSize: 12,
-    color: '#666',
+    color: '#FFA000', // Darker yellow
     marginTop: 2,
+  },
+  // YELLOW CONNECT BUTTON
+  connectButton: {
+    backgroundColor: '#FFC107', // Bright yellow
+  },
+  connectButtonText: {
+    color: '#000000', // Black text for contrast
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  // CLOSE BUTTON
+  closeButton: {
+    backgroundColor: '#FFC107', // Yellow
+  },
+  closeButtonText: {
+    color: '#000000', // Black text
+    fontWeight: 'bold',
   },
   footer: {
     marginTop: 16,

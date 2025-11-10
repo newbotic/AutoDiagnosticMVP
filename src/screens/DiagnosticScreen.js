@@ -8,7 +8,7 @@ const DiagnosticScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Diagnostic Completu" />
+        <Appbar.Content title="Diagnostic Complet" />
       </Appbar.Header>
 
       <DTCReader />
